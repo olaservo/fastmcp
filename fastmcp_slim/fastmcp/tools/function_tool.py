@@ -168,6 +168,7 @@ class ToolMeta:
     auth: AuthCheck | list[AuthCheck] | None = None
     enabled: bool = True
     run_in_thread: bool = True
+    mirror_structured_content: bool = True
 
 
 def _resolve_param_hints(fn: Callable[..., Any]) -> dict[str, Any]:
@@ -234,6 +235,7 @@ class FunctionTool(Tool):
         timeout: float | None = None,
         auth: AuthCheck | list[AuthCheck] | None = None,
         run_in_thread: bool | None = None,
+        mirror_structured_content: bool | None = None,
     ) -> FunctionTool:
         """Create a FunctionTool from a function.
 
@@ -261,6 +263,7 @@ class FunctionTool(Tool):
                     timeout,
                     auth,
                     run_in_thread,
+                    mirror_structured_content,
                 ]
             )
             or output_schema is not NotSet
@@ -293,6 +296,11 @@ class FunctionTool(Tool):
                 timeout=timeout,
                 auth=auth,
                 run_in_thread=True if run_in_thread is None else run_in_thread,
+                mirror_structured_content=(
+                    True
+                    if mirror_structured_content is None
+                    else mirror_structured_content
+                ),
             )
 
         parsed_fn = ParsedFunction.from_function(fn)
@@ -363,6 +371,7 @@ class FunctionTool(Tool):
             timeout=metadata.timeout,
             auth=metadata.auth,
             run_in_thread=metadata.run_in_thread,
+            mirror_structured_content=metadata.mirror_structured_content,
         )
 
     async def run(self, arguments: dict[str, Any]) -> ToolResult:
@@ -525,6 +534,7 @@ def tool(
     timeout: float | None = None,
     auth: AuthCheck | list[AuthCheck] | None = None,
     run_in_thread: bool = True,
+    mirror_structured_content: bool = True,
 ) -> Callable[[F], F]: ...
 @overload
 def tool(
@@ -543,6 +553,7 @@ def tool(
     timeout: float | None = None,
     auth: AuthCheck | list[AuthCheck] | None = None,
     run_in_thread: bool = True,
+    mirror_structured_content: bool = True,
 ) -> Callable[[F], F]: ...
 
 
@@ -562,6 +573,7 @@ def tool(
     timeout: float | None = None,
     auth: AuthCheck | list[AuthCheck] | None = None,
     run_in_thread: bool = True,
+    mirror_structured_content: bool = True,
 ) -> Any:
     """Standalone decorator to mark a function as an MCP tool.
 
@@ -602,6 +614,7 @@ def tool(
             timeout=timeout,
             auth=auth,
             run_in_thread=run_in_thread,
+            mirror_structured_content=mirror_structured_content,
         )
         target = fn.__func__ if isinstance(fn, staticmethod | MethodType) else fn
         cast(Any, target).__fastmcp__ = metadata

@@ -44,8 +44,7 @@ class TestToolFromFunction:
                     "type": "object",
                     "x-fastmcp-wrap-result": True,
                 },
-                "fn": HasName("add"),
-                "task_config": {
+                "fn": HasName("add"), "mirror_structured_content": True, "task_config": {
                     "mode": "forbidden",
                     "poll_interval": timedelta(seconds=5),
                 },
@@ -96,8 +95,7 @@ class TestToolFromFunction:
                     "type": "object",
                     "x-fastmcp-wrap-result": True,
                 },
-                "fn": HasName("fetch_data"),
-                "task_config": {
+                "fn": HasName("fetch_data"), "mirror_structured_content": True, "task_config": {
                     "mode": "forbidden",
                     "poll_interval": timedelta(seconds=5),
                 },
@@ -138,8 +136,7 @@ class TestToolFromFunction:
                 "task_config": {
                     "mode": "forbidden",
                     "poll_interval": timedelta(seconds=5),
-                },
-                "run_in_thread": True,
+                }, "mirror_structured_content": True, "run_in_thread": True,
             }
         )
 
@@ -176,8 +173,7 @@ class TestToolFromFunction:
                 "task_config": {
                     "mode": "forbidden",
                     "poll_interval": timedelta(seconds=5),
-                },
-                "run_in_thread": True,
+                }, "mirror_structured_content": True, "run_in_thread": True,
             }
         )
 
@@ -219,8 +215,7 @@ class TestToolFromFunction:
                     "type": "object",
                 },
                 "output_schema": {"additionalProperties": True, "type": "object"},
-                "fn": HasName("create_user"),
-                "task_config": {
+                "fn": HasName("create_user"), "mirror_structured_content": True, "task_config": {
                     "mode": "forbidden",
                     "poll_interval": timedelta(seconds=5),
                 },
@@ -289,8 +284,7 @@ class TestToolFromFunction:
                 "task_config": {
                     "mode": "forbidden",
                     "poll_interval": timedelta(seconds=5),
-                },
-                "run_in_thread": True,
+                }, "mirror_structured_content": True, "run_in_thread": True,
             }
         )
 
@@ -326,8 +320,7 @@ class TestToolFromFunction:
                 "task_config": {
                     "mode": "forbidden",
                     "poll_interval": timedelta(seconds=5),
-                },
-                "run_in_thread": True,
+                }, "mirror_structured_content": True, "run_in_thread": True,
             }
         )
 
@@ -411,8 +404,7 @@ class TestToolFromFunction:
                 "task_config": {
                     "mode": "forbidden",
                     "poll_interval": timedelta(seconds=5),
-                },
-                "run_in_thread": True,
+                }, "mirror_structured_content": True, "run_in_thread": True,
             }
         )
 

@@ -136,6 +136,10 @@ def search_products_implementation(query: str, category: str | None = None) -> l
 <ParamField body="run_in_thread" type="bool" default="True">
   Applies to sync tool functions only. When `True` (default), sync functions are dispatched to a thread pool so they don't block the event loop. Set to `False` to run the function inline on the event loop thread — useful for libraries with thread affinity like Windows COM (`pywin32`, `uiautomation`, `comtypes`), `tkinter`, or certain GPU/driver bindings. Ignored for async functions, which always run on the event loop. See [Thread affinity](#thread-affinity) for details.
 </ParamField>
+
+<ParamField body="mirror_structured_content" type="bool" default="True">
+  Whether a structured result is also serialized into a `content` text block (the spec's SHOULD). When `True` (default), the value is sent both as `structured_content` and as a serialized copy in `content`. Set to `False` to send `structured_content` only, without the duplicate serialized copy on the wire. See [Structured Output](#structured-output) for details.
+</ParamField>
 </Card>
 
 ### Using with Methods
@@ -514,6 +518,18 @@ The 6/18/2025 MCP spec update [introduced](https://modelcontextprotocol.io/speci
 <Note>
 This automatic behavior enables clients to receive machine-readable data alongside human-readable content without requiring explicit output schemas for object-like returns.
 </Note>
+
+<Tip>
+The serialized copy in `content` is the spec's SHOULD, not a MUST — it keeps the value available to a client that reads `content`. For a large payload it is pure duplication, since the same data is already in `structured_content`. Pass `mirror_structured_content=False` to send `structured_content` only, with empty `content`:
+
+```python
+@mcp.tool(mirror_structured_content=False)
+def list_accounts(segment: str) -> list[Account]:
+    return query_accounts(segment)  # only structured_content is sent
+```
+
+Which field a client forwards to a model is the client's choice; this flag only controls whether the serialized copy is emitted.
+</Tip>
 
 #### Dictionaries and Objects
 

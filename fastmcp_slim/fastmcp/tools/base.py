@@ -251,6 +251,13 @@ class Tool(FastMCPComponent):
             description="Execution timeout in seconds. If None, no timeout is applied."
         ),
     ] = None
+    mirror_structured_content: Annotated[
+        bool,
+        Field(
+            description="Whether structured output is also serialized into a content "
+            "text block (the spec's SHOULD). When False, only structured_content is sent."
+        ),
+    ] = True
 
     @model_validator(mode="after")
     def _validate_tool_name(self) -> Tool:
@@ -311,6 +318,7 @@ class Tool(FastMCPComponent):
         timeout: float | None = None,
         auth: AuthCheck | list[AuthCheck] | None = None,
         run_in_thread: bool | None = None,
+        mirror_structured_content: bool | None = None,
     ) -> FunctionTool:
         """Create a Tool from a function."""
         from fastmcp.tools.function_tool import FunctionTool
@@ -330,6 +338,7 @@ class Tool(FastMCPComponent):
             timeout=timeout,
             auth=auth,
             run_in_thread=run_in_thread,
+            mirror_structured_content=mirror_structured_content,
         )
 
     async def run(self, arguments: dict[str, Any]) -> ToolResult:
@@ -404,10 +413,12 @@ class Tool(FastMCPComponent):
                 return ToolResult(content=content, structured_content=structured)
             return ToolResult(content=content)
 
-        # Has output_schema - wrap if x-fastmcp-wrap-result is set
+        # Has output_schema - wrap if x-fastmcp-wrap-result is set. The serialized
+        # `content` copy is the spec's SHOULD; omit it when the tool opts out so
+        # structured_content is the only representation on the wire.
         wrap_result = self.output_schema.get("x-fastmcp-wrap-result")
         return ToolResult(
-            content=content,
+            content=content if self.mirror_structured_content else [],
             structured_content={"result": structured} if wrap_result else structured,
             meta={"fastmcp": {"wrap_result": True}} if wrap_result else None,
         )

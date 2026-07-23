@@ -1783,6 +1783,7 @@ class FastMCP(
         timeout: float | None = None,
         auth: AuthCheck | list[AuthCheck] | None = None,
         run_in_thread: bool = True,
+        mirror_structured_content: bool = True,
     ) -> F: ...
 
     @overload
@@ -1804,6 +1805,7 @@ class FastMCP(
         timeout: float | None = None,
         auth: AuthCheck | list[AuthCheck] | None = None,
         run_in_thread: bool = True,
+        mirror_structured_content: bool = True,
     ) -> Callable[[F], F]: ...
 
     def tool(
@@ -1824,6 +1826,7 @@ class FastMCP(
         timeout: float | None = None,
         auth: AuthCheck | list[AuthCheck] | None = None,
         run_in_thread: bool = True,
+        mirror_structured_content: bool = True,
     ) -> (
         Callable[[AnyFunction], FunctionTool]
         | FunctionTool
@@ -1899,6 +1902,7 @@ class FastMCP(
             timeout=timeout,
             auth=auth,
             run_in_thread=run_in_thread,
+            mirror_structured_content=mirror_structured_content,
         )
 
         return result
